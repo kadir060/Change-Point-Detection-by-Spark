@@ -1,5 +1,4 @@
 import DataSetOperations.{checkAnyMissingValue, preprocessBorcelik, readDataset}
-import Methods.binSeg
 import org.apache.spark.sql.SparkSession
 
 object Driver {
@@ -14,6 +13,7 @@ object Driver {
       return
     }
     println("No missing value for the dataset!!")
+    println(df.count())
     //df.show()
     //calculateMetrics(lSVM(df))
     //println(meanOfSignal(df))
@@ -22,8 +22,8 @@ object Driver {
     //println(costL2(df))
     //windowsBased(df,"L2",10000)
     //binSeg(df,"L1",3)
-    //val points = windowsBased(df,"L2",10000)
-    val points = binSeg(df,"L2",10)
-    points.foreach(f => print(f + "\n"))
+    //val points = windowsBased(df,"L2",54000/2 - 10)
+    //val points = binSeg(df,"Poission",10)
+    //points.foreach(f => print(f + "\n"))
   }
 }

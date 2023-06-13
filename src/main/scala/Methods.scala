@@ -1,6 +1,4 @@
 import costFunctions.{costL1, costL2, costPoission}
-import org.apache.spark.ml.classification.LinearSVC
-import org.apache.spark.ml.feature.VectorAssembler
 import org.apache.spark.mllib.evaluation.MulticlassMetrics
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.expressions.Window
@@ -22,23 +20,6 @@ object Methods {
     val metrics = new MulticlassMetrics(predictionAndLabels)
     println(metrics.accuracy)
 
-
-  }
-
-  def lSVM(dataFrame: DataFrame): DataFrame = {
-    println("Linear Support Vector Machine")
-    val vecAssemb = new VectorAssembler().setInputCols(Array("value")).setOutputCol("features")
-
-    val newDF = vecAssemb.transform(dataFrame)
-
-    val lsvc = new LinearSVC().setMaxIter(10).setRegParam(0.1)
-
-    val lsvcModel = lsvc.fit(newDF)
-
-    //println(s"Coefficients: ${lsvcModel.coefficients} Intercept: ${lsvcModel.intercept}")
-
-    return lsvcModel.transform(newDF)
-
   }
 
   def windowsBased(dataFrame: DataFrame, costFunctionType: String, windowsSize: Int): Array[Int] = {
@@ -47,8 +28,7 @@ object Methods {
       return Array(-1)
     }
     //val newDf = dataFrame.select("value").withColumn("id",monotonically_increasing_id())
-    val newDf = dataFrame.withColumn("id", row_number().over(Window.orderBy(monotonically_increasing_id())) - 1)
-
+    var newDf = dataFrame.withColumn("id", row_number().over(Window.orderBy(monotonically_increasing_id())) - 1)
     val size = newDf.count()
     var t = 0
     var scores = ArrayBuffer[(Double, Int)]()
@@ -73,6 +53,7 @@ object Methods {
     scores = scores.sortBy(f => f._1).reverse
     return scores.map(f => f._2).toArray
   }
+
   def binSeg(dataFrame: DataFrame, costFunctionType: String, pointCount: Int ): Array[Int] = {
     if (true != dataFrame.columns.contains("value")) {
       println("binSeg requires dataframe having value column")
@@ -153,7 +134,7 @@ object Methods {
         val best = scores.toArray.maxBy(_._1)
         points += best._2
         points = points.sortBy(f => f)
-        points.foreach( f=> println(f))
+        //points.foreach( f=> println(f))
       }
     }
     return points.toArray

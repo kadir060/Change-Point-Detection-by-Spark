@@ -5,9 +5,6 @@
 /target/scala-2.12/classes/
 borçelik_data.csv
 borcelik.txt
-plotRes.m
-res_i_L2_win.txt
-res_s_L2_win.txt
 .idea
 datasets2
 project

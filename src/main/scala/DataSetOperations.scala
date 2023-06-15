@@ -15,13 +15,6 @@ object DataSetOperations {
       col("value").cast("double").as("value"))
   }
 
-  def preprocessLabelled(dataFrame: DataFrame): DataFrame = {
-    println("Preprocessing Labelled Dataset")
-    return dataFrame.select(col("timestamp").cast("long").as("timestamp"),
-      col("value").cast("double").as("value"),
-      col("label").cast("integer").as("label"))
-  }
-
   def preprocessArtificial(dataFrame: DataFrame): DataFrame = {
     println("Preprocessing Artificial Dataset")
     return dataFrame.select(col("value").cast("double").as("value"))

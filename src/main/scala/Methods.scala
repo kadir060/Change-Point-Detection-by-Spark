@@ -7,21 +7,6 @@ import scala.collection.mutable.ArrayBuffer
 
 object Methods {
 
-  def calculateMetrics(dataFrame: DataFrame): Unit = {
-    if (!(dataFrame.columns.contains("label") && dataFrame.columns.contains("prediction"))) {
-      println("calculateMetrics function requires a dataset having prediction and label columns")
-      return false
-    }
-    val helperDataset = dataFrame.select(col("prediction").cast("float").as("prediction"),
-      col("value").cast("float").as("value"))
-
-    val predictionAndLabels = helperDataset.rdd.map(f => Tuple2(f.get(0), f.get(1)))
-
-    val metrics = new MulticlassMetrics(predictionAndLabels)
-    println(metrics.accuracy)
-
-  }
-
   def windowsBased(dataFrame: DataFrame, costFunctionType: String, windowsSize: Int): Array[Int] = {
     if (true != dataFrame.columns.contains("value")) {
       println("windowsBased requires dataframe having value column")

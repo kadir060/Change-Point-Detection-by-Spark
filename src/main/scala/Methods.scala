@@ -27,7 +27,6 @@ object Methods {
       println("windowsBased requires dataframe having value column")
       return Array(-1)
     }
-    //val newDf = dataFrame.select("value").withColumn("id",monotonically_increasing_id())
     var newDf = dataFrame.withColumn("id", row_number().over(Window.orderBy(monotonically_increasing_id())) - 1)
     val size = newDf.count()
     var t = 0
@@ -36,8 +35,7 @@ object Methods {
       val p = newDf.filter(col("id").between(t - windowsSize, t)).toDF()
       val q = newDf.filter(col("id").between(t, t + windowsSize)).toDF()
       val r = newDf.filter(col("id").between(t - windowsSize, t + windowsSize)).toDF()
-      //print("p=" + p.count() + " q=" + q.count() + " r=" + r.count() +"\n")
-      print(t - windowsSize + "/" + (size - windowsSize) + "\n")
+      print(t - windowsSize + "/" + (size - 2*windowsSize) + "\n")
       val score = costFunctionType match {
         case "Poission" => costPoission(r) - costPoission(p) - costPoission(q)
         case "L1" => costL1(r) - costL1(p) - costL1(q)
@@ -80,7 +78,6 @@ object Methods {
             case "L2" => costL2(p) + costL2(q)
             case _ => -23
           }
-          //print(costL2(p) + " " + costL2(q) + "\n")
           if (-23 == score) {
             println("Invalid cost function !")
             return Array(-1)
@@ -134,7 +131,6 @@ object Methods {
         val best = scores.toArray.maxBy(_._1)
         points += best._2
         points = points.sortBy(f => f)
-        //points.foreach( f=> println(f))
       }
     }
     return points.toArray

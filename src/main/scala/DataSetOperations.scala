@@ -22,6 +22,11 @@ object DataSetOperations {
       col("label").cast("integer").as("label"))
   }
 
+  def preprocessArtificial(dataFrame: DataFrame): DataFrame = {
+    println("Preprocessing Artificial Dataset")
+    return dataFrame.select(col("value").cast("double").as("value"))
+  }
+
   def checkAnyMissingValue(dataFrame: DataFrame): Boolean ={
     println("Checking if any missing value")
     val newDf = dataFrame.select(dataFrame.columns.map(c => sum(col(c).isNull.cast("int")).alias(c)): _*)
@@ -29,6 +34,11 @@ object DataSetOperations {
       println("Missing timestamp !!")
       return true
     }
+
+    if (newDf.columns.contains("timestamp") == false){ // For artificial
+      return false
+    }
+
     if (0 != newDf.first().get(1)){
       println("Missing value !!")
       return true

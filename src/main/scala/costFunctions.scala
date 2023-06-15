@@ -40,7 +40,6 @@ object costFunctions {
 
     val variance = varOfSignal(dataFrame)
 
-    //return variance*(dataFrame.count())
-    return variance // #TODO consider changing
+    return variance
   }
 }
